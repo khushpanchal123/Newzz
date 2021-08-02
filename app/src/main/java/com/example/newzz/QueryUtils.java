@@ -32,7 +32,7 @@ public class QueryUtils {
         //return extractFeatureFromJSON(jsonResponse);
     }
 
-    private static List<News> extractFeatureFromJSON(String jsonString) throws JSONException {
+    public static List<News> extractFeatureFromJSON(String jsonString) throws JSONException {
 
         if (TextUtils.isEmpty(jsonString)) return null;
         List<News> newsLists = new ArrayList<>();
