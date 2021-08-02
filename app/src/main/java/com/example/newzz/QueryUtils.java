@@ -26,10 +26,10 @@ public class QueryUtils {
 
     public static List<News> extractNews(String jsonResponse) throws IOException, JSONException {
 
-        //URL url = new URL(jsonResponse);
-        //String jsonString = makeHttpRequest(url);
-        //return extractFeatureFromJSON(jsonString);
-        return extractFeatureFromJSON(jsonResponse);
+        URL url = new URL(jsonResponse);
+        String jsonString = makeHttpRequest(url);
+        return extractFeatureFromJSON(jsonString);
+        //return extractFeatureFromJSON(jsonResponse);
     }
 
     private static List<News> extractFeatureFromJSON(String jsonString) throws JSONException {
@@ -65,6 +65,7 @@ public class QueryUtils {
         InputStream inputStream = null;
         try {
             urlConnection = (HttpURLConnection) url.openConnection();
+            urlConnection.addRequestProperty("User-Agent", "Mozilla/5.0 (Windows NT 6.1; WOW64; rv:221.0) Gecko/20100101 Firefox/31.0");
             urlConnection.setReadTimeout(30000 /* milliseconds */);
             urlConnection.setConnectTimeout(60000 /* milliseconds */);
             urlConnection.setRequestMethod("GET");
@@ -74,7 +75,7 @@ public class QueryUtils {
                 inputStream = urlConnection.getInputStream();
                 jsonResponse = readFromStream(inputStream);
             } else {
-                Log.e(LOG_TAG, "Error response code XYZ: " + urlConnection.getResponseCode());
+                Log.e(LOG_TAG, "Error response code: " + urlConnection.getResponseCode());
             }
         } catch (IOException e) {
             Log.e(LOG_TAG, "Problem retrieving the earthquake JSON results.", e);
