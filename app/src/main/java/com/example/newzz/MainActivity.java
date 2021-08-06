@@ -21,12 +21,16 @@ import androidx.loader.content.AsyncTaskLoader;
 import androidx.loader.content.Loader;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.viewpager.widget.ViewPager;
+import androidx.viewpager2.widget.ViewPager2;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.RequestQueue;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.google.android.material.tabs.TabLayout;
+import com.google.android.material.tabs.TabLayoutMediator;
 
 import org.json.JSONException;
 import java.io.IOException;
@@ -45,7 +49,7 @@ import okhttp3.ResponseBody;
 import okhttp3.internal.http2.Http2Reader;
 
 //  LoaderManager.LoaderCallbacks<List<News>>
-public class MainActivity extends AppCompatActivity implements NewsAdapter.NewsListner {
+public class MainActivity extends AppCompatActivity {
 
     private List<News> mNewsList;
     private NewsAdapter mNewsAdapter;
@@ -61,50 +65,76 @@ public class MainActivity extends AppCompatActivity implements NewsAdapter.NewsL
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        // Find the view pager that will allow the user to swipe between fragments
+        ViewPager2 viewPager = (ViewPager2) findViewById(R.id.viewpager);
+
+        // Create an adapter that knows which fragment should be shown on each page
+        CategoryAdapter adapter = new CategoryAdapter(this);
+
+        // Set the adapter onto the view pager
+        viewPager.setAdapter(adapter);
+
+        // Find the tab layout that shows the tabs
+        TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
+
+        // Connect the tab layout with the view pager. This will
+        //   1. Update the tab layout when the view pager is swiped
+        //   2. Update the view pager when a tab is selected
+        //   3. Set the tab layout's tab names with the view pager's adapter's titles
+        //      by calling onPageTitle()
+        new TabLayoutMediator(tabLayout, viewPager, new TabLayoutMediator.TabConfigurationStrategy() {
+            @Override public void onConfigureTab(TabLayout.Tab tab, int position) {
+                if(position == 0)
+                    tab.setText("News");
+                else
+                    tab.setText("Favorite");
+            }
+        }).attach();
+
         //getSupportLoaderManager().initLoader(LOADER_ID, null, MainActivity.this);
 
-        mNewsList = new ArrayList<>();
-        RecyclerView mRecyclerView = findViewById(R.id.recyclerview_news);
-        mRecyclerView.setLayoutManager(new LinearLayoutManager(this, RecyclerView.VERTICAL, false));
-        mRecyclerView.setHasFixedSize(true);
-        mNewsAdapter = new NewsAdapter(this);
-        mRecyclerView.setAdapter(mNewsAdapter);
-
-        makeHttpRequest(JSON_RESPONSE);
+//        mNewsList = new ArrayList<>();
+//        RecyclerView mRecyclerView = findViewById(R.id.recyclerview_news);
+//        mRecyclerView.setLayoutManager(new LinearLayoutManager(this, RecyclerView.VERTICAL, false));
+//        mRecyclerView.setHasFixedSize(true);
+//        mNewsAdapter = new NewsAdapter(this);
+//        mRecyclerView.setAdapter(mNewsAdapter);
+//
+//        makeHttpRequest(JSON_RESPONSE);
 
     }
 
-    private void makeHttpRequest(String jsonResponse) {
-
-        Request request = new Request.Builder()
-                .url(jsonResponse)
-                .build();
-
-        client.newCall(request).enqueue(new Callback() {
-            @Override public void onFailure(Call call, IOException e) {
-                e.printStackTrace();
-                Log.i("MainActivity", "That didn't work!");
-            }
-
-            @Override public void onResponse(Call call, Response response) throws IOException {
-                try (ResponseBody responseBody = response.body()) {
-                    if (!response.isSuccessful()) throw new IOException("Unexpected code " + response);
-                    mjson = responseBody.string();
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            try {
-                                mNewsList = QueryUtils.extractFeatureFromJSON(mjson);
-                            } catch (JSONException e) {
-                                e.printStackTrace();
-                            }
-                            mNewsAdapter.setNewsData(mNewsList);
-                        }
-                    });
-                }
-            }
-        });
-    }
+//    private void makeHttpRequest(String jsonResponse) {
+//
+//        Request request = new Request.Builder()
+//                .url(jsonResponse)
+//                .build();
+//
+//        client.newCall(request).enqueue(new Callback() {
+//            @Override public void onFailure(Call call, IOException e) {
+//                e.printStackTrace();
+//                Log.i("MainActivity", "That didn't work!");
+//            }
+//
+//            @Override public void onResponse(Call call, Response response) throws IOException {
+//                try (ResponseBody responseBody = response.body()) {
+//                    if (!response.isSuccessful()) throw new IOException("Unexpected code " + response);
+//                    mjson = responseBody.string();
+//                    runOnUiThread(new Runnable() {
+//                        @Override
+//                        public void run() {
+//                            try {
+//                                mNewsList = QueryUtils.extractFeatureFromJSON(mjson);
+//                            } catch (JSONException e) {
+//                                e.printStackTrace();
+//                            }
+//                            mNewsAdapter.setNewsData(mNewsList);
+//                        }
+//                    });
+//                }
+//            }
+//        });
+//    }
 
     //    private void makeHttpRequest(String url) {
 //
@@ -174,12 +204,12 @@ public class MainActivity extends AppCompatActivity implements NewsAdapter.NewsL
 //    public void onLoaderReset(@NonNull Loader<List<News>> loader) {
 //
 //    }
-
-    @Override
-    public void onClickNews(int position) {
-        String url = mNewsList.get(position).getUrl();
-        CustomTabsIntent.Builder builder = new CustomTabsIntent.Builder();
-        CustomTabsIntent customTabsIntent = builder.build();
-        customTabsIntent.launchUrl(this, Uri.parse(url));
-    }
+//
+//    @Override
+//    public void onClickNews(int position) {
+//        String url = mNewsList.get(position).getUrl();
+//        CustomTabsIntent.Builder builder = new CustomTabsIntent.Builder();
+//        CustomTabsIntent customTabsIntent = builder.build();
+//        customTabsIntent.launchUrl(this, Uri.parse(url));
+//    }
 }
