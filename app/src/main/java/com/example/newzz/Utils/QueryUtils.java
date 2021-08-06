@@ -1,7 +1,9 @@
-package com.example.newzz;
+package com.example.newzz.Utils;
 
 import android.text.TextUtils;
 import android.util.Log;
+
+import com.example.newzz.database.News;
 
 import org.json.JSONArray;
 import org.json.JSONException;

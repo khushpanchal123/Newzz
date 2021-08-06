@@ -1,20 +1,19 @@
-package com.example.newzz;
+package com.example.newzz.adapter;
 
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
-import android.widget.CompoundButton;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.example.newzz.database.News;
+import com.example.newzz.R;
 
 import java.util.List;
 
@@ -33,8 +32,13 @@ public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.viewHolder> {
         notifyDataSetChanged();
     }
 
+    public List<News> getNewsData(){
+        return mNewsList;
+    }
+
     public interface NewsListner{
         void onClickNews(int position);
+        void onFavoriteClick(int position);
     }
 
     @NonNull
@@ -44,9 +48,7 @@ public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.viewHolder> {
         Context context = parent.getContext();
         int layoutIdForListItem = R.layout.list_item;
         LayoutInflater inflater = LayoutInflater.from(context);
-        boolean shouldAttachToParentImmediately = false;
-
-        View view = inflater.inflate(layoutIdForListItem, parent, shouldAttachToParentImmediately);
+        View view = inflater.inflate(layoutIdForListItem, parent, false);
         return new viewHolder(view);
     }
 
@@ -57,21 +59,7 @@ public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.viewHolder> {
         holder.titleTV.setText(currNews.getTitle());
         Glide.with(holder.itemView.getContext()).load(currNews.getImage()).into(holder.imageIV);
         holder.favoriteIB.setChecked(currNews.getFavoriteStatus());
-        holder.favoriteIB.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                //currNews.setFavoriteStatus(!currNews.getFavoriteStatus());
-                if(currNews.getFavoriteStatus()){
-                    Toast.makeText(holder.itemView.getContext(), "Removed from Favorites", Toast.LENGTH_SHORT).show();
-                    currNews.setFavoriteStatus(false);
-                }
-                else {
-                    Toast.makeText(holder.itemView.getContext(), "Successfully added as Favorites", Toast.LENGTH_SHORT).show();
-                    currNews.setFavoriteStatus(true);
-                }
-                notifyDataSetChanged();
-            }
-        });
+        holder.favoriteIB.setOnClickListener(v -> mNewsListner.onFavoriteClick(position));
     }
 
     @Override
@@ -96,7 +84,8 @@ public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.viewHolder> {
 
         @Override
         public void onClick(View v) {
-            mNewsListner.onClickNews(getAdapterPosition());
+            mNewsListner.onClickNews(getBindingAdapterPosition());
         }
+
     }
 }

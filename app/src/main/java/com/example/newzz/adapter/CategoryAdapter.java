@@ -1,15 +1,14 @@
-package com.example.newzz;
+package com.example.newzz.adapter;
 
 import android.content.Context;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentPagerAdapter;
-import androidx.fragment.app.FragmentStatePagerAdapter;
-import androidx.viewpager.widget.PagerAdapter;
 import androidx.viewpager2.adapter.FragmentStateAdapter;
+
+import com.example.newzz.Fragments.FavoriteFragment;
+import com.example.newzz.Fragments.NewsFragment;
 
 public class CategoryAdapter extends FragmentStateAdapter{
 
