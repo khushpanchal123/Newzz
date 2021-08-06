@@ -1,14 +1,21 @@
 package com.example.newzz;
 
 import android.annotation.SuppressLint;
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.view.View;
+import android.widget.FrameLayout;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.browser.customtabs.CustomTabsIntent;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.loader.app.LoaderManager;
 import androidx.loader.content.AsyncTaskLoader;
 import androidx.loader.content.Loader;
@@ -64,6 +71,7 @@ public class MainActivity extends AppCompatActivity implements NewsAdapter.NewsL
         mRecyclerView.setAdapter(mNewsAdapter);
 
         makeHttpRequest(JSON_RESPONSE);
+
     }
 
     private void makeHttpRequest(String jsonResponse) {
@@ -98,7 +106,7 @@ public class MainActivity extends AppCompatActivity implements NewsAdapter.NewsL
         });
     }
 
-//    private void makeHttpRequest(String url) {
+    //    private void makeHttpRequest(String url) {
 //
 //        RequestQueue queue = Volley.newRequestQueue(this);
 //

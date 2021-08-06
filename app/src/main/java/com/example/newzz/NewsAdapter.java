@@ -4,8 +4,12 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -48,8 +52,26 @@ public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.viewHolder> {
 
     @Override
     public void onBindViewHolder(NewsAdapter.viewHolder holder, int position) {
-        holder.titleTV.setText(mNewsList.get(position).getTitle());
-        Glide.with(holder.itemView.getContext()).load(mNewsList.get(position).getImage()).into(holder.imageIV);
+
+        News currNews = mNewsList.get(position);
+        holder.titleTV.setText(currNews.getTitle());
+        Glide.with(holder.itemView.getContext()).load(currNews.getImage()).into(holder.imageIV);
+        holder.favoriteIB.setChecked(currNews.getFavoriteStatus());
+        holder.favoriteIB.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //currNews.setFavoriteStatus(!currNews.getFavoriteStatus());
+                if(currNews.getFavoriteStatus()){
+                    Toast.makeText(holder.itemView.getContext(), "Removed from Favorites", Toast.LENGTH_SHORT).show();
+                    currNews.setFavoriteStatus(false);
+                }
+                else {
+                    Toast.makeText(holder.itemView.getContext(), "Successfully added as Favorites", Toast.LENGTH_SHORT).show();
+                    currNews.setFavoriteStatus(true);
+                }
+                notifyDataSetChanged();
+            }
+        });
     }
 
     @Override
@@ -62,11 +84,13 @@ public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.viewHolder> {
 
         public final TextView titleTV;
         public final ImageView imageIV;
+        public final CheckBox favoriteIB;
 
         public viewHolder(View itemView) {
             super(itemView);
             titleTV =  itemView.findViewById(R.id.title_ID);
             imageIV =  itemView.findViewById(R.id.image_ID);
+            favoriteIB = itemView.findViewById(R.id.favorite_ID);
             itemView.setOnClickListener(this);
         }
 
