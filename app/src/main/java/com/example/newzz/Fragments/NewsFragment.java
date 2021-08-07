@@ -10,11 +10,14 @@ import android.widget.Toast;
 
 import androidx.browser.customtabs.CustomTabsIntent;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.example.newzz.AppExecutor;
+import com.example.newzz.MainViewModel;
 import com.example.newzz.database.AppDatabase;
 import com.example.newzz.database.News;
 import com.example.newzz.adapter.NewsAdapter;
@@ -26,6 +29,7 @@ import org.json.JSONException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import okhttp3.Call;
 import okhttp3.Callback;
@@ -37,6 +41,7 @@ import okhttp3.ResponseBody;
 public class NewsFragment extends Fragment implements NewsAdapter.NewsListner {
 
     private List<News> mNewsList;
+    private List<News> mFavoriteNews;
     private NewsAdapter mNewsAdapter;
     private static final int LOADER_ID = 0;
     private String mjson;
@@ -59,6 +64,7 @@ public class NewsFragment extends Fragment implements NewsAdapter.NewsListner {
         mRecyclerView.setHasFixedSize(true);
         mNewsAdapter = new NewsAdapter(this);
         mRecyclerView.setAdapter(mNewsAdapter);
+        setupViewModel();
         makeHttpRequest(JSON_RESPONSE);
         return rootView;
     }
@@ -87,13 +93,38 @@ public class NewsFragment extends Fragment implements NewsAdapter.NewsListner {
                             } catch (JSONException e) {
                                 e.printStackTrace();
                             }
-                            mNewsAdapter.setNewsData(mNewsList);
+                            setFavStar();
                         }
                     });
                 }
             }
         });
     }
+
+    private void setFavStar() {
+        int flag = 0;
+        for(int i=0; i<mNewsList.size(); i++){
+            for(int j=0; j<mFavoriteNews.size(); j++){
+                if(mNewsList.get(i).getTitle().equals(mFavoriteNews.get(j).getTitle())) flag = 1;
+            }
+            if(flag==1) mNewsList.get(i).setFavoriteStatus(true);
+            else mNewsList.get(i).setFavoriteStatus(false);
+            flag=0;
+        }
+        mNewsAdapter.setNewsData(mNewsList);
+    }
+
+    private void setupViewModel() {
+        MainViewModel viewModel = ViewModelProviders.of(this).get(MainViewModel.class);
+        viewModel.getTasks().observe(getActivity(), new Observer<List<News>>() {
+            @Override
+            public void onChanged(List<News> newsEntries) {
+                mFavoriteNews = newsEntries;
+                setFavStar();
+            }
+        });
+    }
+
 
     @Override
     public void onClickNews(int position) {

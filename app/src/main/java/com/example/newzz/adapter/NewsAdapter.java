@@ -32,10 +32,6 @@ public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.viewHolder> {
         notifyDataSetChanged();
     }
 
-    public List<News> getNewsData(){
-        return mNewsListAdapter;
-    }
-
     public interface NewsListner{
         void onClickNews(int position);
         void onFavoriteClick(int position);
