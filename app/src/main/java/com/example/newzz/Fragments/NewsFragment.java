@@ -13,6 +13,7 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
 import com.example.newzz.AppExecutor;
 import com.example.newzz.database.AppDatabase;
 import com.example.newzz.database.News;
@@ -58,7 +59,6 @@ public class NewsFragment extends Fragment implements NewsAdapter.NewsListner {
         mRecyclerView.setHasFixedSize(true);
         mNewsAdapter = new NewsAdapter(this);
         mRecyclerView.setAdapter(mNewsAdapter);
-
         makeHttpRequest(JSON_RESPONSE);
         return rootView;
     }
@@ -111,7 +111,7 @@ public class NewsFragment extends Fragment implements NewsAdapter.NewsListner {
                 @Override
                 public void run() {
                     mNewsList.get(position).setFavoriteStatus(false);
-                    mDb.newsDao().deleteTaskById(mNewsList.get(position).getId());
+                    mDb.newsDao().deleteNews(FavoriteFragment.getFavNewsToDelete(mNewsList.get(position)));
                 }
             });
             Toast.makeText(getActivity(), "Removed from Favorites", Toast.LENGTH_SHORT).show();
@@ -126,7 +126,7 @@ public class NewsFragment extends Fragment implements NewsAdapter.NewsListner {
             });
             Toast.makeText(getActivity(), "Successfully added as Favorites", Toast.LENGTH_SHORT).show();
         }
-        mNewsAdapter.notifyDataSetChanged();
+        //mNewsAdapter.setNewsData(mNewsList);
     }
 
 }

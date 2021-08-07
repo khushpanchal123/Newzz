@@ -6,6 +6,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -27,10 +28,9 @@ import java.util.List;
 
 public class FavoriteFragment extends Fragment implements NewsAdapter.NewsListner {
 
-    private RecyclerView mRecyclerView;
-    private NewsAdapter mNewsAdapter;
+    private NewsAdapter mFavoriteAdapter;
     private AppDatabase mDb;
-    private List<News> mFavoriteNews;
+    private static List<News> mFavoriteNews;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -38,10 +38,10 @@ public class FavoriteFragment extends Fragment implements NewsAdapter.NewsListne
 
         mDb = AppDatabase.getInstance(getActivity());
 
-        mRecyclerView = rootView.findViewById(R.id.recyclerview_news);
+        RecyclerView mRecyclerView = rootView.findViewById(R.id.recyclerview_news);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-        mNewsAdapter = new NewsAdapter(this);
-        mRecyclerView.setAdapter(mNewsAdapter);
+        mFavoriteAdapter = new NewsAdapter(this);
+        mRecyclerView.setAdapter(mFavoriteAdapter);
         setupViewModel();
         return rootView;
     }
@@ -52,7 +52,8 @@ public class FavoriteFragment extends Fragment implements NewsAdapter.NewsListne
             @Override
             public void onChanged(List<News> newsEntries) {
                 mFavoriteNews = newsEntries;
-                mNewsAdapter.setNewsData(newsEntries);
+                for(int i=0; i<mFavoriteNews.size(); i++) {mFavoriteNews.get(i).setFavoriteStatus(true);}
+                mFavoriteAdapter.setNewsData(mFavoriteNews);
             }
         });
     }
@@ -74,9 +75,18 @@ public class FavoriteFragment extends Fragment implements NewsAdapter.NewsListne
             @Override
             public void run() {
                 mDb.newsDao().deleteNews(currNews);
-                if(currNews.getFavoriteStatus()) Log.d("Khush Panchal", "true");
-                else Log.d("Khush Panchal", "false");
             }
         });
+        Toast.makeText(getActivity(), "Removed from Favorites", Toast.LENGTH_SHORT).show();
+    }
+
+    public static News getFavNewsToDelete(News news){
+        News favNewsToDelete = news;
+        for(int i=0; i<mFavoriteNews.size(); i++){
+            if(news.getTitle().equals(mFavoriteNews.get(i).getTitle())){
+                favNewsToDelete = mFavoriteNews.get(i);
+            }
+        }
+        return favNewsToDelete;
     }
 }

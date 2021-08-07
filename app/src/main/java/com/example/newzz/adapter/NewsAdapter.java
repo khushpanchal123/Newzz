@@ -19,7 +19,7 @@ import java.util.List;
 
 public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.viewHolder> {
 
-    private List<News>  mNewsList;
+    private List<News>  mNewsListAdapter;
     private final NewsListner mNewsListner;
 
     public NewsAdapter(NewsListner newsListner) {
@@ -28,12 +28,12 @@ public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.viewHolder> {
     }
 
     public void setNewsData(List<News> data) {
-        mNewsList = data;
+        mNewsListAdapter = data;
         notifyDataSetChanged();
     }
 
     public List<News> getNewsData(){
-        return mNewsList;
+        return mNewsListAdapter;
     }
 
     public interface NewsListner{
@@ -55,7 +55,7 @@ public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.viewHolder> {
     @Override
     public void onBindViewHolder(NewsAdapter.viewHolder holder, int position) {
 
-        News currNews = mNewsList.get(position);
+        News currNews = mNewsListAdapter.get(position);
         holder.titleTV.setText(currNews.getTitle());
         Glide.with(holder.itemView.getContext()).load(currNews.getImage()).into(holder.imageIV);
         holder.favoriteIB.setChecked(currNews.getFavoriteStatus());
@@ -64,8 +64,8 @@ public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.viewHolder> {
 
     @Override
     public int getItemCount() {
-        if(mNewsList==null) return 0;
-        return mNewsList.size();
+        if(mNewsListAdapter==null) return 0;
+        return mNewsListAdapter.size();
     }
 
     public class viewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {

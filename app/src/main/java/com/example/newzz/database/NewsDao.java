@@ -20,6 +20,4 @@ public interface NewsDao {
     @Delete
     void deleteNews(News news);
 
-    @Query("DELETE FROM news WHERE id = :id")
-    void deleteTaskById(int id);
 }
