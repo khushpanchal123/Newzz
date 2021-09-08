@@ -19,6 +19,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.newzz.AppExecutor;
 import com.example.newzz.MainViewModel;
+import com.example.newzz.NewsListner;
 import com.example.newzz.R;
 import com.example.newzz.adapter.NewsAdapter;
 import com.example.newzz.database.AppDatabase;
@@ -26,7 +27,7 @@ import com.example.newzz.database.News;
 
 import java.util.List;
 
-public class FavoriteFragment extends Fragment implements NewsAdapter.NewsListner {
+public class FavoriteFragment extends Fragment implements NewsListner {
 
     private NewsAdapter mFavoriteAdapter;
     private AppDatabase mDb;
@@ -40,7 +41,8 @@ public class FavoriteFragment extends Fragment implements NewsAdapter.NewsListne
 
         RecyclerView mRecyclerView = rootView.findViewById(R.id.recyclerview_news);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-        mFavoriteAdapter = new NewsAdapter(this);
+        mFavoriteAdapter = new NewsAdapter();
+        mFavoriteAdapter.setmNewsListner(this);
         mRecyclerView.setAdapter(mFavoriteAdapter);
         setupViewModel();
         return rootView;

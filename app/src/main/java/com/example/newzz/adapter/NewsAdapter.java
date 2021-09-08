@@ -12,6 +12,8 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.example.newzz.MainActivity;
+import com.example.newzz.NewsListner;
 import com.example.newzz.database.News;
 import com.example.newzz.R;
 
@@ -20,21 +22,20 @@ import java.util.List;
 public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.viewHolder> {
 
     private List<News>  mNewsListAdapter;
-    private final NewsListner mNewsListner;
+    private NewsListner mNewsListner;
 
-    public NewsAdapter(NewsListner newsListner) {
+    public NewsAdapter() {
         super();
-        mNewsListner = newsListner;
+        //mNewsListner = newsListner;
+    }
+
+    public void setmNewsListner(NewsListner newsListner){
+        this.mNewsListner = newsListner;
     }
 
     public void setNewsData(List<News> data) {
-        mNewsListAdapter = data;
+        mNewsListAdapter = data; // Reference to original list
         notifyDataSetChanged();
-    }
-
-    public interface NewsListner{
-        void onClickNews(int position);
-        void onFavoriteClick(int position);
     }
 
     @NonNull

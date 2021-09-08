@@ -18,14 +18,14 @@ import okhttp3.OkHttpClient;
 //  LoaderManager.LoaderCallbacks<List<News>>
 public class MainActivity extends AppCompatActivity {
 
-    private List<News> mNewsList;
-    private NewsAdapter mNewsAdapter;
-    private static final int LOADER_ID = 0;
-    private String mjson;
-
-    private final OkHttpClient client = new OkHttpClient();
-
-    private static final String JSON_RESPONSE = "https://newsapi.org/v2/top-headlines?country=in&apiKey=c3a342cc6d394cb19fc3db635741e77f";
+//    private List<News> mNewsList;
+//    private NewsAdapter mNewsAdapter;
+//    private static final int LOADER_ID = 0;
+//    private String mjson;
+//
+//    private final OkHttpClient client = new OkHttpClient();
+//
+//    private static final String JSON_RESPONSE = "https://newsapi.org/v2/top-headlines?country=in&apiKey=c3a342cc6d394cb19fc3db635741e77f";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

@@ -18,6 +18,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.example.newzz.AppExecutor;
 import com.example.newzz.MainViewModel;
+import com.example.newzz.NewsListner;
 import com.example.newzz.database.AppDatabase;
 import com.example.newzz.database.News;
 import com.example.newzz.adapter.NewsAdapter;
@@ -38,7 +39,7 @@ import okhttp3.Request;
 import okhttp3.Response;
 import okhttp3.ResponseBody;
 
-public class NewsFragment extends Fragment implements NewsAdapter.NewsListner {
+public class NewsFragment extends Fragment implements NewsListner {
 
     private List<News> mNewsList;
     private List<News> mFavoriteNews;
@@ -62,7 +63,8 @@ public class NewsFragment extends Fragment implements NewsAdapter.NewsListner {
         RecyclerView mRecyclerView = rootView.findViewById(R.id.recyclerview_news);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity(), RecyclerView.VERTICAL, false));
         mRecyclerView.setHasFixedSize(true);
-        mNewsAdapter = new NewsAdapter(this);
+        mNewsAdapter = new NewsAdapter();
+        mNewsAdapter.setmNewsListner(this);
         mRecyclerView.setAdapter(mNewsAdapter);
         setupViewModel();
         makeHttpRequest(JSON_RESPONSE);
@@ -94,6 +96,7 @@ public class NewsFragment extends Fragment implements NewsAdapter.NewsListner {
                                 e.printStackTrace();
                             }
                             setFavStar();
+                            mNewsAdapter.setNewsData(mNewsList);
                         }
                     });
                 }
@@ -111,7 +114,6 @@ public class NewsFragment extends Fragment implements NewsAdapter.NewsListner {
             else mNewsList.get(i).setFavoriteStatus(false);
             flag=0;
         }
-        mNewsAdapter.setNewsData(mNewsList);
     }
 
     private void setupViewModel() {
@@ -121,6 +123,7 @@ public class NewsFragment extends Fragment implements NewsAdapter.NewsListner {
             public void onChanged(List<News> newsEntries) {
                 mFavoriteNews = newsEntries;
                 setFavStar();
+                mNewsAdapter.notifyDataSetChanged();
             }
         });
     }
@@ -143,6 +146,7 @@ public class NewsFragment extends Fragment implements NewsAdapter.NewsListner {
                 public void run() {
                     mNewsList.get(position).setFavoriteStatus(false);
                     mDb.newsDao().deleteNews(FavoriteFragment.getFavNewsToDelete(mNewsList.get(position)));
+                    //mDb.newsDao().deleteNews(mNewsList.get(position));
                 }
             });
             Toast.makeText(getActivity(), "Removed from Favorites", Toast.LENGTH_SHORT).show();
@@ -157,7 +161,7 @@ public class NewsFragment extends Fragment implements NewsAdapter.NewsListner {
             });
             Toast.makeText(getActivity(), "Successfully added as Favorites", Toast.LENGTH_SHORT).show();
         }
-        //mNewsAdapter.setNewsData(mNewsList);
+        mNewsAdapter.notifyDataSetChanged();
     }
 
 }
