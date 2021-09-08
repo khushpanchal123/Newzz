@@ -21,15 +21,14 @@ import java.util.List;
 
 public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.viewHolder> {
 
-    private List<News>  mNewsListAdapter;
+    private List<News> mNewsListAdapter;
     private NewsListner mNewsListner;
 
     public NewsAdapter() {
         super();
-        //mNewsListner = newsListner;
     }
 
-    public void setmNewsListner(NewsListner newsListner){
+    public void setmNewsListner(NewsListner newsListner) {
         this.mNewsListner = newsListner;
     }
 
@@ -61,7 +60,7 @@ public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.viewHolder> {
 
     @Override
     public int getItemCount() {
-        if(mNewsListAdapter==null) return 0;
+        if (mNewsListAdapter == null) return 0;
         return mNewsListAdapter.size();
     }
 
@@ -73,8 +72,8 @@ public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.viewHolder> {
 
         public viewHolder(View itemView) {
             super(itemView);
-            titleTV =  itemView.findViewById(R.id.title_ID);
-            imageIV =  itemView.findViewById(R.id.image_ID);
+            titleTV = itemView.findViewById(R.id.title_ID);
+            imageIV = itemView.findViewById(R.id.image_ID);
             favoriteIB = itemView.findViewById(R.id.favorite_ID);
             itemView.setOnClickListener(this);
         }
@@ -83,6 +82,5 @@ public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.viewHolder> {
         public void onClick(View v) {
             mNewsListner.onClickNews(getBindingAdapterPosition());
         }
-
     }
 }

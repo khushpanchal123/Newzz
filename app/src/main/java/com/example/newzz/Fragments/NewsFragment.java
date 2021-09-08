@@ -44,28 +44,27 @@ public class NewsFragment extends Fragment implements NewsListner {
     private List<News> mNewsList;
     private List<News> mFavoriteNews;
     private NewsAdapter mNewsAdapter;
-    private static final int LOADER_ID = 0;
     private String mjson;
     private AppDatabase mDb;
 
     private final OkHttpClient client = new OkHttpClient();
-
     private static final String JSON_RESPONSE = "https://newsapi.org/v2/top-headlines?country=in&apiKey=c3a342cc6d394cb19fc3db635741e77f";
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState){
+                             Bundle savedInstanceState) {
 
         View rootView = inflater.inflate(R.layout.news_list, container, false);
-
         mDb = AppDatabase.getInstance(getActivity());
         mNewsList = new ArrayList<>();
+
         RecyclerView mRecyclerView = rootView.findViewById(R.id.recyclerview_news);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity(), RecyclerView.VERTICAL, false));
         mRecyclerView.setHasFixedSize(true);
         mNewsAdapter = new NewsAdapter();
         mNewsAdapter.setmNewsListner(this);
         mRecyclerView.setAdapter(mNewsAdapter);
+
         setupViewModel();
         makeHttpRequest(JSON_RESPONSE);
         return rootView;
@@ -78,14 +77,17 @@ public class NewsFragment extends Fragment implements NewsListner {
                 .build();
 
         client.newCall(request).enqueue(new Callback() {
-            @Override public void onFailure(Call call, IOException e) {
+            @Override
+            public void onFailure(Call call, IOException e) {
                 e.printStackTrace();
-                Log.i("MainActivity", "That didn't work!");
+                Log.i("MainActivity", "Error Occurred");
             }
 
-            @Override public void onResponse(Call call, Response response) throws IOException {
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
                 try (ResponseBody responseBody = response.body()) {
-                    if (!response.isSuccessful()) throw new IOException("Unexpected code " + response);
+                    if (!response.isSuccessful())
+                        throw new IOException("Unexpected code " + response);
                     mjson = responseBody.string();
                     getActivity().runOnUiThread(new Runnable() {
                         @Override
@@ -106,13 +108,13 @@ public class NewsFragment extends Fragment implements NewsListner {
 
     private void setFavStar() {
         int flag = 0;
-        for(int i=0; i<mNewsList.size(); i++){
-            for(int j=0; j<mFavoriteNews.size(); j++){
-                if(mNewsList.get(i).getTitle().equals(mFavoriteNews.get(j).getTitle())) flag = 1;
+        for (int i = 0; i < mNewsList.size(); i++) {
+            for (int j = 0; j < mFavoriteNews.size(); j++) {
+                if (mNewsList.get(i).getTitle().equals(mFavoriteNews.get(j).getTitle())) flag = 1;
             }
-            if(flag==1) mNewsList.get(i).setFavoriteStatus(true);
+            if (flag == 1) mNewsList.get(i).setFavoriteStatus(true);
             else mNewsList.get(i).setFavoriteStatus(false);
-            flag=0;
+            flag = 0;
         }
     }
 
@@ -128,7 +130,6 @@ public class NewsFragment extends Fragment implements NewsListner {
         });
     }
 
-
     @Override
     public void onClickNews(int position) {
         String url = mNewsList.get(position).getUrl();
@@ -140,7 +141,7 @@ public class NewsFragment extends Fragment implements NewsListner {
     @Override
     public void onFavoriteClick(int position) {
 
-        if(mNewsList.get(position).getFavoriteStatus()){
+        if (mNewsList.get(position).getFavoriteStatus()) {
             AppExecutor.getInstance().diskIO().execute(new Runnable() {
                 @Override
                 public void run() {
@@ -150,8 +151,7 @@ public class NewsFragment extends Fragment implements NewsListner {
                 }
             });
             Toast.makeText(getActivity(), "Removed from Favorites", Toast.LENGTH_SHORT).show();
-        }
-        else {
+        } else {
             AppExecutor.getInstance().diskIO().execute(new Runnable() {
                 @Override
                 public void run() {

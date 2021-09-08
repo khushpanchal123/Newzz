@@ -44,6 +44,7 @@ public class FavoriteFragment extends Fragment implements NewsListner {
         mFavoriteAdapter = new NewsAdapter();
         mFavoriteAdapter.setmNewsListner(this);
         mRecyclerView.setAdapter(mFavoriteAdapter);
+
         setupViewModel();
         return rootView;
     }
@@ -54,7 +55,9 @@ public class FavoriteFragment extends Fragment implements NewsListner {
             @Override
             public void onChanged(List<News> newsEntries) {
                 mFavoriteNews = newsEntries;
-                for(int i=0; i<mFavoriteNews.size(); i++) {mFavoriteNews.get(i).setFavoriteStatus(true);}
+                for (int i = 0; i < mFavoriteNews.size(); i++) {
+                    mFavoriteNews.get(i).setFavoriteStatus(true);
+                }
                 mFavoriteAdapter.setNewsData(mFavoriteNews);
             }
         });
@@ -82,10 +85,10 @@ public class FavoriteFragment extends Fragment implements NewsListner {
         Toast.makeText(getActivity(), "Removed from Favorites", Toast.LENGTH_SHORT).show();
     }
 
-    public static News getFavNewsToDelete(News news){
+    public static News getFavNewsToDelete(News news) {
         News favNewsToDelete = news;
-        for(int i=0; i<mFavoriteNews.size(); i++){
-            if(news.getTitle().equals(mFavoriteNews.get(i).getTitle())){
+        for (int i = 0; i < mFavoriteNews.size(); i++) {
+            if (news.getTitle().equals(mFavoriteNews.get(i).getTitle())) {
                 favNewsToDelete = mFavoriteNews.get(i);
             }
         }
